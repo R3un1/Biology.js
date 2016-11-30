@@ -9,7 +9,7 @@
     </head>
     <body>
         <header>
-            <a href="#"><h1>Genetics in Javascript</h1></a>
+            <a href="./index.html"><h1>Genetics in Javascript</h1></a>
         </header>
         <nav>
             <a href="#h-w">Hardy-Weinberg</a>
@@ -36,9 +36,9 @@
                 <script type="text/javascript">
                     const dPopulation = 512;
                     const dGenerations = 1000;
-                    const dSimulations = 64;
-                    const bottleNeckFlag = false;
-                    const bottleNeck = 1;
+                    const dSimulations = 16;
+                    const bottleNeckFlag = true;
+                    const bottleNeck = 16;
 
                     function startWorker() {
                         worker = new Worker ("js/gDrift.js");
@@ -47,7 +47,6 @@
                             var output = document.getElementById('gen_output');
                             output.innerHTML = '<h4>Effective Population</h4>' + '<div class="text">' + event.data[1] + '</div>';
                             draw_line_chart (output, event.data[0], "generation", "p", []);
-                            worker.terminate();
                         };
                     }
                     startWorker();
@@ -79,11 +78,11 @@
                 <div class="assumptions">finite population size, alleles of unequal fitness, no overlapping generations</div>
                 <div id="sel_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
-                    const sSimulations = 32;
-                    const sGenerations = 5000;
+                    const sSimulations = 16;
+                    const sGenerations = 500;
                     const sPopulation = 1000;
                     const sP = 0.01;
-                    const fitness = 1.001;
+                    const fitness = 1.01;
 
                     function startWorker() {
                         worker = new Worker ("js/selection.js");
@@ -91,7 +90,6 @@
                         worker.onmessage = function (event) {
                             var output = document.getElementById('sel_output');
                             output.innerHTML = '<h4>Population</h4>' + '<div class="text">' + sPopulation + '</div>';
-                            output.innerHTML += '<h4>Simulations</h4>' + '<div class="text">' + sSimulations + '</div>';
                             output.innerHTML += '<h4>Selection Factor</h4>' + '<div class="text">' + fitness + '</div>';
                             draw_line_chart (output, event.data, "generation", "p", []);
                         };
