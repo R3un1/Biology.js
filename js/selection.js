@@ -1,7 +1,5 @@
 var p;
 var data = [];
-var extinct = 0;
-var fixed = 0;
 
 function runGeneration(generationData, cN, fitness){
     var draws = 2 * cN;
@@ -18,7 +16,7 @@ function runGeneration(generationData, cN, fitness){
 function runSimulation(simNum, simulations, generations, N, P, fitness){
     p = P;
     for (var i = 0; i < generations; i++){
-        if (simulations > 1) runGeneration(data[simNum], N, p, fitness);
+        if (simulations > 1) runGeneration(data[simNum], N, fitness);
         else runGeneration(data, N, fitness);
     }
 }
