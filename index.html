@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <title>Biology in JS</title>
+        <meta charset="utf-8" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="js/general.js"></script>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <header>
+            <a href="#"><h1>Genetics in Javascript</h1></a>
+        </header>
+        <nav>
+            <a href="#h-w">Hardy-Weinberg</a>
+            <a href="#genDrift">Genetic Drift</a>
+            <a href="#mutation">Mutation</a>
+            <a href="#fixation">Fixation</a>
+            <a href="#migration">Migration</a>
+            <a href="#selection">Natural Selection</a>
+            <a href="#dirSelection">Directional Selection</a>
+            <a href="#epidemics">Epidemy model</a>
+        </nav>
+        <a href="#" class="floatingDirection"><img src="assets/up.png" /></a>
+        <main>
+            <section id="h-w">
+                <h3>Hardy-Weinberg Model</h3>
+                <div class="assumptions">infinite population size, random mating, no overlapping generations, mutation or selection</div>
+                <div id="hw_output" class="output"></div>
+                <script type="text/javascript" src="js/h-w.js"></script>
+            </section>
+            <section id="genDrift">
+                <h3>Genetic Drift Model</h3>
+                <div class="assumptions">finite population size, random mating, no overlapping generations, mutation or selection</div>
+                <div id="gen_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <script type="text/javascript">
+                    const dPopulation = 10000;
+                    const dGenerations = 1000;
+                    const dSimulations = 1000;
+                    const bottleNeckFlag = false;
+                    const bottleNeck = 1;
+
+                    function startWorker() {
+                        worker = new Worker ("js/gDrift.js");
+                        worker.postMessage([dSimulations, dGenerations, dPopulation, bottleNeck, bottleNeckFlag]);
+                        worker.onmessage = function (event) {
+                            var output = document.getElementById('gen_output');
+                            output.innerHTML = '<h4>Effective Population</h4>' + '<div class="text">' + event.data[1] + '</div>';
+                            draw_line_chart (output, event.data[0], "generation", "p", []);
+                            worker.terminate();
+                        };
+                    }
+                    startWorker();
+                </script>
+            </section>
+            <section id="mutation">
+                <h3>Mutation Model</h3>
+                <div class="assumptions">finite population size, random mating, no overlapping generations, genetic drift or selection</div>
+                <div id="mut_parOutput" class="output"></div>
+                <div id="mut_textOutput" class="textOutput"></div>
+                <script type="text/javascript" src="js/mutation.js"></script>
+            </section>
+            <section id="fixation">
+                <h3>Allele Fixation Model</h3>
+                <div class="assumptions">finite population size, random mating, no selection or overlapping generations</div>
+                <div id="fix_output" class="output"></div>
+                <script type="text/javascript" src="js/fixation.js"></script>
+            </section>
+            <section id="migration">
+                <h3>Migration Spatial Model</h3>
+                <div class="assumptions">finite population size, no selection or overlapping generations</div>
+                <div id="mig_output" class="output"></div>
+                <button id="mig_button" onclick="migrate()">Start Simulation</button>
+                <div id="mig_parOutput" class="output"></div>
+                <script type="text/javascript" src="js/spatial.js"></script>
+            </section>
+            <section id="selection">
+                <h3>Natural Selection Model</h3>
+                <div class="assumptions">finite population size, alleles of unequal fitness, no overlapping generations</div>
+                <div id="sel_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <script type="text/javascript">
+                    const sSimulations = 16;
+                    const sGenerations = 500;
+                    const sPopulation = 100;
+                    const sP = 0.1;
+                    const fitness = 1.1;
+
+                    function startWorker() {
+                        worker = new Worker ("js/selection.js");
+                        worker.postMessage([sSimulations, sGenerations, sPopulation, sP, fitness]);
+                        worker.onmessage = function (event) {
+                            var output = document.getElementById('sel_output');
+                            output.innerHTML += '<h4>Population</h4>' + '<div class="text">' + sPopulation + '</div>';
+                            output.innerHTML += '<h4>Simulations</h4>' + '<div class="text">' + sSimulations + '</div>';
+                            output.innerHTML += '<h4>Selection Factor</h4>' + '<div class="text">' + fitness + '</div>';
+                            draw_line_chart (output, event.data, "generation", "p", []);
+                        };
+                    }
+                    startWorker();
+                </script>
+            </section>
+            <section id="dirSelection">
+                <h3>Directional Selection Model</h3>
+                <div class="assumptions">infinite population size, h < 0, no overlapping generations</div>
+                <div id="dir_output" class="output"></div>
+                <script type="text/javascript" src="js/direction.js"></script>
+            </section>
+            <section id="epidemics">
+                <h3>Epidemy Model</h3>
+                <div class="assumptions"></div>
+                <div id="ep_output" class="output"></div>
+                <script type="text/javascript" src="js/epidemics.js"></script>
+        </main>
+        <footer>
+            <h5>based on the edX course: EPFLx: NiC1.0x Nature, in Code: Biology in JavaScript</h5>
+            <h4>&#169; 2016 James Bohacek</h4>
+    </body>
+</html>

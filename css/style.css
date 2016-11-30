@@ -1,0 +1,121 @@
+body{
+    background: #1e1e1e;
+    color: white;
+    font-family: Regencie;
+    overflow-x: hidden;
+}
+header h1{
+    font-size: 4em;
+    font-family: Courier New, Courier, monospace;
+    font-weight: lighter;
+    color: #5edb15;
+}
+header a{
+    text-decoration: none;
+}
+nav{
+    background: #2a2a2a;
+    margin: -10px -10px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+nav > a{
+    padding: 21px;
+    margin: -1px;
+    border: #1e1e1e solid;
+    color: #eee;
+    text-decoration: none;
+}
+main{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+}
+main > section{
+    display: flex;
+    flex-flow: column nowrap;
+    text-align: center;
+    margin: 2em;
+    padding: 20px;
+    border: 1px #416b29 solid;
+    background: #363636;
+    min-width: 550px;
+}
+
+@media (min-width: 920px) {
+    main > section{
+        width: 750px;
+        align-self: center;
+    }
+}
+
+h3{
+    color: #f0f0f0;
+    font-size: 1.5em;
+}
+main h4{
+    color: #23a025;
+}
+.assumptions{
+    font-size: 0.7em;
+    font-style: italic;
+    font-weight: lighter;
+}
+.assumptions::before{
+    content: "Assumptions: ";
+    font-weight: bold;
+    color: #e6ffe6;
+}
+section svg{
+    margin: 10px;
+    border: 1px #416b29 solid;
+}
+.text{
+    font-family: Courier New, Courier, monospace;
+    font-weight: 100;
+    color: #ccc;
+}
+.textOutput{
+    overflow: auto;
+    margin: 20px;
+    padding: 10px;
+    font-family: Courier New, Courier, monospace;
+    height: 300px;
+    color: #ccc;
+    width: 500px;
+    align-self: center;
+    border: 1px #416b29 solid;
+}
+.mutated{
+    color: #af2f2f;
+}
+@font-face{
+    font-family: Regencie;
+    src: url("../assets/RegencieLight.ttf") format("truetype");
+
+}
+footer{
+    color: #777;
+    font-size: 0.75em;
+    font-style: italic;
+    border-top: thin #363636 solid;
+    text-align: center;
+    font-family: Courier New, Courier, monospace;
+}
+button{
+    margin: -10px 0px 0px;
+    background: #444;
+    border: none;
+    color: #f0f0f0;
+    font-family: Courier New, Courier, monospace;
+    padding: 5px;
+    width: 500px;
+    display: flex;
+    align-self: center;
+}
+.floatingDirection{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
