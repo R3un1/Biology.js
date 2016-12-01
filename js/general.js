@@ -2,6 +2,14 @@ function precisionRound(number, decimalPlaces){
     return (Math.round(number*Math.pow(10, decimalPlaces)))/Math.pow(10, decimalPlaces)
 }
 
+function isEqual(setA, setB) {
+    if (setA.length !== setB.length) return false;
+    for (var i = 0; i < setA.length; i++) {
+        if (setA[i] !== setB[i]) return false;
+    }
+    return true;
+}
+
 function draw_line_chart(output,data,x_label,y_label,legend_values,x_max,y_max_flex) {
     var margin = {top: 30, right: 50, bottom: 50, left: 50},
         width = 550 - margin.left - margin.right,

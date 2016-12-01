@@ -1,14 +1,9 @@
-const fixPopulation = 100;
-const fixSimulations = 10000;
-const fixOutput = document.getElementById('fix_output')
-
 var p;
-
 var fixations = 0;
 var totGenerations = 0;
 
-function fixGeneration() {
-    var draws = 2 * fixPopulation;
+function fixGeneration(N) {
+    var draws = 2 * N;
     var a1 = 0;
     var a2 = 0;
     for (var i = 0; i < draws; i++) {
@@ -18,12 +13,12 @@ function fixGeneration() {
     p = a1 / draws;
 }
 
-function runUntilFixation() {
+function runUntilFixation(N) {
     var _generations = 0;
-    p = 1 / (2 * fixPopulation);
+    p = 1 / (2 * N);
     do {
         _generations++;
-        fixGeneration();
+        fixGeneration(N);
     } while (p > 0 && p < 1);
     if (p == 1) {
         totGenerations += _generations;
@@ -31,9 +26,13 @@ function runUntilFixation() {
     }
 }
 
-for (var i = 0; i < fixSimulations; i++) {
-    runUntilFixation();
+function runSimulations(config) {
+    for (var i = 0; i < config[0]; i++) {
+        runUntilFixation(config[1]);
+    }
 }
 
-fixOutput.innerHTML += '<h4>Fixations / Simulations (p)</h4>' + '<div class="text">' + (fixations/fixSimulations) + '</div>';
-fixOutput.innerHTML += '<h4>Average Fixation Runtime</h4>' + '<div class="text">' + precisionRound(totGenerations/fixations, 2) + '</div>';
+onmessage = function(c) {
+    runSimulations(c.data);
+    postMessage([fixations, totGenerations]);
+};

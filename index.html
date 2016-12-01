@@ -40,7 +40,7 @@
                     const bottleNeckFlag = true;
                     const bottleNeck = 16;
 
-                    function startWorker() {
+                    function startDrift() {
                         worker = new Worker ("js/gDrift.js");
                         worker.postMessage([dSimulations, dGenerations, dPopulation, bottleNeck, bottleNeckFlag]);
                         worker.onmessage = function (event) {
@@ -49,21 +49,65 @@
                             draw_line_chart (output, event.data[0], "generation", "p", []);
                         };
                     }
-                    startWorker();
+                    startDrift();
                 </script>
             </section>
             <section id="mutation">
                 <h3>Mutation Model</h3>
                 <div class="assumptions">finite population size, random mating, no overlapping generations, genetic drift or selection</div>
-                <div id="mut_parOutput" class="output"></div>
-                <div id="mut_textOutput" class="textOutput"></div>
-                <script type="text/javascript" src="js/mutation.js"></script>
+                <div id="mut_parOutput" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <!--<div id="mut_textOutput" class="textOutput"></div>-->
+                <script type="text/javascript">
+                    const mGenerations = 8;
+                    const mRate = 0.000055;
+                    const seqLength = 16;
+                    const numSeq = 64;
+                    
+                    function outputSequence(output, originalSeq, set) {
+                        for (var i = 0; i < set.length; i++) {
+                            var item = (isEqual(originalSeq, set) ? '<li>' : '<li class="mutated">');
+                            for (var j = 0; j < set[i].length; j++) {
+                                item += set[j];
+                            }
+                            output.innerHTML += item + '</li>';
+                        }
+                    }
+
+                    function startMutation() {
+                        worker = new Worker ("js/mutation.js");
+                        worker.postMessage([mGenerations, mRate, seqLength, numSeq]);
+                        worker.onmessage = function(event) {
+                            var output = document.getElementById("mut_parOutput");
+                            var textOutput = document.getElementById("mut_textOutput");
+                            output.innerHTML = '<h4>Mutation Rate</h4>' + '<div class="text">' + mRate + ' per base & generation</div>';
+                            output.innerHTML += '<h4>Generations</h4>' + '<div class="text">' + mGenerations + '</div>';
+                            // outputSequence(textOutput, event.data[2], event.data[0]);
+                            output.innerHTML += '<h4>Mutations</h4>' + '<div class="text">' + event.data[1] + '/' + numSeq + '</div>';
+                        };
+                    }
+                    startMutation();
+                </script>
             </section>
             <section id="fixation">
                 <h3>Allele Fixation Model</h3>
                 <div class="assumptions">finite population size, random mating, no selection or overlapping generations</div>
-                <div id="fix_output" class="output"></div>
-                <script type="text/javascript" src="js/fixation.js"></script>
+                <div id="fix_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <script type="text/javascript">
+                    const fSimulations = 10000;
+                    const fPopulation = 100;
+
+                    function startFixation() {
+                        var output = document.getElementById('fix_output')
+                        worker = new Worker ("js/fixation.js");
+                        worker.postMessage([fSimulations, fPopulation]);
+                        worker.onmessage = function(e) {
+                            var data = e.data;
+                            output.innerHTML = '<h4>Fixations / Simulations (p)</h4>' + '<div class="text">' + (data[0]/fSimulations) + '</div>';
+                            output.innerHTML += '<h4>Average Fixation Runtime</h4>' + '<div class="text">' + precisionRound(data[1]/data[0], 2) + '</div>';
+                        };
+                    }
+                    startFixation();
+                </script>
             </section>
             <section id="migration">
                 <h3>Migration Spatial Model</h3>
@@ -84,7 +128,7 @@
                     const sP = 0.01;
                     const fitness = 1.01;
 
-                    function startWorker() {
+                    function startSelection() {
                         worker = new Worker ("js/selection.js");
                         worker.postMessage([sSimulations, sGenerations, sPopulation, sP, fitness]);
                         worker.onmessage = function (event) {
@@ -94,19 +138,19 @@
                             draw_line_chart (output, event.data, "generation", "p", []);
                         };
                     }
-                    startWorker();
+                    startSelection();
                 </script>
             </section>
             <section id="dirSelection">
                 <h3>Directional Selection Model</h3>
                 <div class="assumptions">infinite population size, h < 0, no overlapping generations</div>
-                <div id="dir_output" class="output"></div>
+                <div id="dir_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript" src="js/direction.js"></script>
             </section>
             <section id="epidemics">
                 <h3>Epidemy Model</h3>
                 <div class="assumptions"></div>
-                <div id="ep_output" class="output"></div>
+                <div id="ep_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript" src="js/epidemics.js"></script>
         </main>
         <footer>
