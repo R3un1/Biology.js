@@ -112,10 +112,56 @@
             <section id="migration">
                 <h3>Migration Spatial Model</h3>
                 <div class="assumptions">finite population size, no selection or overlapping generations</div>
-                <div id="mig_output" class="output"></div>
+                <div id="mig_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <button id="mig_button" onclick="migrate()">Start Simulation</button>
                 <div id="mig_parOutput" class="output"></div>
-                <script type="text/javascript" src="js/spatial.js"></script>
+                <script type="text/javascript">
+                    const gridSide = 30;
+                    const maxMatingDistance = 1;
+
+                    function startMigration() {
+                        var output = document.getElementById('mig_output');
+                        var button = document.getElementById('mig_button');
+                        worker = new Worker ("js/spatial.js");
+                        worker.postMessage([gridSide, maxMatingDistance]);
+                        worker.onmessage = function(e) {
+                            output.innerHTML = '<h4>Grid Side</h4>' + '<div class="text">' + gridSide + '</div>';
+                            output.innerHTML =  '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
+                            draw_grid(spaOutput, e.data, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+                        };
+                    }                    
+
+                    function migrate() {
+                        function spaSimulation() {
+                            spaGeneration();
+                            update_grid(spaOutput, grid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+                            spaGenerationsCounter++;
+                            writeF();
+                            if (p === 1 || p === 0) {
+                                clearInterval(sim);
+                                migButton.setAttribute('onclick', 'restart()');
+                                migButton.innerText = 'Restart';
+                            }
+
+                        }
+                        migButton.setAttribute('onclick', 'terminate()');
+                        migButton.innerText = 'Pause';
+                        sim = setInterval(spaSimulation, 1);
+                    }
+
+                    function terminate() {
+                        clearInterval(sim);
+                        migButton.setAttribute('onclick', 'migrate()');
+                        migButton.innerText = 'Unpause';
+                    }
+
+                    function restart() {
+                        grid = [];
+                        spaGenerationsCounter = 0;
+                        initGrid();
+                        migrate();
+                    }
+                </script>
             </section>
             <section id="selection">
                 <h3>Natural Selection Model</h3>

@@ -1,56 +1,10 @@
-//modifiers
-const gridLenght = 30;
-const maxMatingDistance = 1;
-const time = 3000;
-const spaGenerations = 100;
-
-
-const spaOutput = document.getElementById('mig_output');
-const migButton = document.getElementById('mig_button');
-
 var p;
 var grid = [];
 var spaGenerationsCounter = 0;
 var F = 0;
 var sim;
-
-
-spaOutput.innerHTML += '<h4>Grid Side</h4>' + '<div class="text">' + gridLenght + '</div>';
-spaOutput.innerHTML += '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
-initGrid();
-draw_grid(spaOutput, grid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
-
-function migrate() {
-    function spaSimulation() {
-        spaGeneration();
-        update_grid(spaOutput, grid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
-        spaGenerationsCounter++;
-        writeF();
-        if (p === 1 || p === 0) {
-            clearInterval(sim);
-            migButton.setAttribute('onclick', 'restart()');
-            migButton.innerText = 'Restart';
-        }
-
-    }
-    migButton.setAttribute('onclick', 'terminate()');
-    migButton.innerText = 'Pause';
-    sim = setInterval(spaSimulation, 1);
-}
-
-function terminate() {
-    clearInterval(sim);
-    migButton.setAttribute('onclick', 'migrate()');
-    migButton.innerText = 'Unpause';
-}
-
-function restart() {
-    grid = [];
-    spaGenerationsCounter = 0;
-    initGrid();
-    migrate();
-}
-
+var gridLenght;
+var maxMatingDistance;
 
 function initGrid() {
     p = 0.5;
@@ -162,3 +116,9 @@ function writeF() {
     document.getElementById('mig_parOutput').innerHTML = '<h4>Generation</h4>' + '<div class="text">' + spaGenerationsCounter + '</div>';
     // document.getElementById('mig_parOutput').innerHTML += '<h4>F of heterozygosity</h4>' + '<div class="text">' + precisionRound(F, 2) + '</div>';
 }
+
+onmessage = function(c) {
+    gridLenght = c.data[0];
+    maxMatingDistance = c.data[1];
+    initGrid();
+};
