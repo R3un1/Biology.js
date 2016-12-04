@@ -7,8 +7,7 @@ Here I have taken the idea a bit higher building a simple web application around
 
 ###TODOs
 * [ ] course finished
-  * [x] directional selection
-  * [ ] disruptive selection
+  * [x] selection models with infinite N
   * [ ] epidemics
 * [ ] all the models implemented through WebWorkers
 * [ ] config elements added

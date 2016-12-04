@@ -18,7 +18,7 @@
             <a href="#fixation">Fixation</a>
             <a href="#migration">Migration</a>
             <a href="#selection">Natural Selection</a>
-            <a href="#dirSelection">Directional Selection</a>
+            <a href="#infSelection">Infinity Selection</a>
             <a href="#epidemics">Epidemy model</a>
         </nav>
         <a href="#" class="floatingDirection"><img src="assets/up.png" /></a>
@@ -44,7 +44,7 @@
                         worker = new Worker ("js/gDrift.js");
                         worker.postMessage([dSimulations, dGenerations, dPopulation, bottleNeck, bottleNeckFlag]);
                         worker.onmessage = function (event) {
-                            var output = document.getElementById('gen_output');
+                            let output = document.getElementById('gen_output');
                             output.innerHTML = '<h4>Effective Population</h4>' + '<div class="text">' + event.data[1] + '</div>';
                             draw_line_chart (output, event.data[0], "generation", "p", []);
                         };
@@ -77,7 +77,7 @@
                         worker = new Worker ("js/mutation.js");
                         worker.postMessage([mGenerations, mRate, seqLength, numSeq]);
                         worker.onmessage = function(event) {
-                            var output = document.getElementById("mut_parOutput");
+                            let output = document.getElementById("mut_parOutput");
                             var textOutput = document.getElementById("mut_textOutput");
                             output.innerHTML = '<h4>Mutation Rate</h4>' + '<div class="text">' + mRate + ' per base & generation</div>';
                             output.innerHTML += '<h4>Generations</h4>' + '<div class="text">' + mGenerations + '</div>';
@@ -97,7 +97,7 @@
                     const fPopulation = 100;
 
                     function startFixation() {
-                        var output = document.getElementById('fix_output')
+                        let output = document.getElementById('fix_output')
                         worker = new Worker ("js/fixation.js");
                         worker.postMessage([fSimulations, fPopulation]);
                         worker.onmessage = function(e) {
@@ -120,7 +120,7 @@
                     const maxMatingDistance = 1;
 
                     function startMigration() {
-                        var output = document.getElementById('mig_output');
+                        let output = document.getElementById('mig_output');
                         var button = document.getElementById('mig_button');
                         worker = new Worker ("js/spatial.js");
                         worker.postMessage([gridSide, maxMatingDistance]);
@@ -179,7 +179,7 @@
                         worker = new Worker ("js/selection.js");
                         worker.postMessage([sSimulations, sGenerations, sPopulation, sP, fitness]);
                         worker.onmessage = function (event) {
-                            var output = document.getElementById('sel_output');
+                            let output = document.getElementById('sel_output');
                             output.innerHTML = '<h4>Population</h4>' + '<div class="text">' + sPopulation + '</div>';
                             output.innerHTML += '<h4>Selection Factor</h4>' + '<div class="text">' + fitness + '</div>';
                             draw_line_chart (output, event.data, "generation", "p", []);
@@ -188,29 +188,30 @@
                     startSelection();
                 </script>
             </section>
-            <section id="dirSelection">
-                <h3>Directional Selection Model</h3>
-                <div class="assumptions">infinite population size, h > 0, no overlapping generations</div>
-                <div id="dir_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+            <section id="infSelection">
+                <h3>Infinity Selection Model</h3>
+                <div class="assumptions">infinite population size, selection in place</div>
+                <div class="controlElements">
+                    <input type="text" id="infInput" placeholder="Enter H" />
+                    <button onclick="startInfSelection()">Run Simulation</button>
+                </div>
+                <div id="dir_output" class="output"></div>
                 <script type="text/javascript">
-                    const s = 0.01;
-                    const h = 0.5; //positive
-                    const dsP = 0.001;
-                    const dsGenerations = 3000;
+                    const s = 0.05;
+                    const dsGenerations = 500;
 
-                    function startDirection() {
-                        worker = new Worker ("js/direction.js");
-                        worker.postMessage([s, h, dsP, dsGenerations]);
+                    function startInfSelection() {
+                        let output = document.getElementById('dir_output');
+                        let h = document.getElementById('infInput').value;
+                        output.innerHTML = '<h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div>';
+                        worker = new Worker ("js/infSelection.js");
+                        worker.postMessage([s, h, dsGenerations]);
                         worker.onmessage = function (event) {
-                            var output = document.getElementById('dir_output');
-                            output.innerHTML = '<h4>S</h4>' + '<div class="text">' + s + '</div>';
-                            output.innerHTML += '<h4>H</h4>' + '<div class="text">' + h + '</div>';
+                            output.innerHTML = '';
                             draw_line_chart (output, event.data[0], "p", "\u0394 p", [], 1, true);
-                            output.innerHTML += '<h4>Starting P</h4>' + '<div class="text">' + dsP + '</div>';
                             draw_line_chart (output, event.data[1], "generation", "p", []);
                         };
                     }
-                    startDirection();
                 </script>
             </section>
             <section id="epidemics">

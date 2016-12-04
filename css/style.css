@@ -104,13 +104,11 @@ footer{
     font-family: Courier New, Courier, monospace;
 }
 button{
-    margin: -10px 0px 0px;
     background: #444;
     border: none;
     color: #f0f0f0;
     font-family: Courier New, Courier, monospace;
     padding: 5px;
-    width: 500px;
     display: flex;
     align-self: center;
 }
@@ -118,4 +116,10 @@ button{
     position: fixed;
     top: 10px;
     right: 10px;
+}
+.controlElements{
+    display: flex;
+    flex-direction: row wrap;
+    align-self: center;
+    margin: 10px;
 }
