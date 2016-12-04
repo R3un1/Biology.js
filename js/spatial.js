@@ -17,6 +17,7 @@ function initGrid() {
             else grid[i][j] = 'A1A2';
         }
     }
+    console.log('got the grid')
 }
 
 
@@ -120,5 +121,6 @@ function writeF() {
 onmessage = function(c) {
     gridLenght = c.data[0];
     maxMatingDistance = c.data[1];
+    console.log('message received')
     initGrid();
 };

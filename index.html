@@ -112,7 +112,7 @@
             <section id="migration">
                 <h3>Migration Spatial Model</h3>
                 <div class="assumptions">finite population size, no selection or overlapping generations</div>
-                <div id="mig_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <!--<div id="mig_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <button id="mig_button" onclick="migrate()">Start Simulation</button>
                 <div id="mig_parOutput" class="output"></div>
                 <script type="text/javascript">
@@ -125,8 +125,9 @@
                         worker = new Worker ("js/spatial.js");
                         worker.postMessage([gridSide, maxMatingDistance]);
                         worker.onmessage = function(e) {
+                            console.log('message received')
                             output.innerHTML = '<h4>Grid Side</h4>' + '<div class="text">' + gridSide + '</div>';
-                            output.innerHTML =  '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
+                            output.innerHTML +=  '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
                             draw_grid(spaOutput, e.data, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
                         };
                     }                    
@@ -161,7 +162,7 @@
                         initGrid();
                         migrate();
                     }
-                </script>
+                </script>-->
             </section>
             <section id="selection">
                 <h3>Natural Selection Model</h3>
@@ -189,9 +190,28 @@
             </section>
             <section id="dirSelection">
                 <h3>Directional Selection Model</h3>
-                <div class="assumptions">infinite population size, h < 0, no overlapping generations</div>
+                <div class="assumptions">infinite population size, h > 0, no overlapping generations</div>
                 <div id="dir_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
-                <script type="text/javascript" src="js/direction.js"></script>
+                <script type="text/javascript">
+                    const s = 0.01;
+                    const h = 0.5; //positive
+                    const dsP = 0.001;
+                    const dsGenerations = 3000;
+
+                    function startDirection() {
+                        worker = new Worker ("js/direction.js");
+                        worker.postMessage([s, h, dsP, dsGenerations]);
+                        worker.onmessage = function (event) {
+                            var output = document.getElementById('dir_output');
+                            output.innerHTML = '<h4>S</h4>' + '<div class="text">' + s + '</div>';
+                            output.innerHTML += '<h4>H</h4>' + '<div class="text">' + h + '</div>';
+                            draw_line_chart (output, event.data[0], "p", "\u0394 p", [], 1, true);
+                            output.innerHTML += '<h4>Starting P</h4>' + '<div class="text">' + dsP + '</div>';
+                            draw_line_chart (output, event.data[1], "generation", "p", []);
+                        };
+                    }
+                    startDirection();
+                </script>
             </section>
             <section id="epidemics">
                 <h3>Epidemy Model</h3>
