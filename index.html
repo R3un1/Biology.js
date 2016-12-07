@@ -207,7 +207,7 @@
                         worker = new Worker ("js/infSelection.js");
                         worker.postMessage([s, h, dsGenerations]);
                         worker.onmessage = function (event) {
-                            output.innerHTML = '';
+                            output.innerHTML = '<h4>P*</h4><div class="text">' + (h-1)/2h;
                             draw_line_chart (output, event.data[0], "p", "\u0394 p", [], 1, true);
                             draw_line_chart (output, event.data[1], "generation", "p", []);
                         };
