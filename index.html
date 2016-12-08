@@ -56,21 +56,24 @@
                 <h3>Mutation Model</h3>
                 <div class="assumptions">finite population size, random mating, no overlapping generations, genetic drift or selection</div>
                 <div id="mut_parOutput" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
-                <!--<div id="mut_textOutput" class="textOutput"></div>-->
+                <div id="mut_textOutput" class="textOutput"></div>
                 <script type="text/javascript">
                     const mGenerations = 8;
                     const mRate = 0.000055;
                     const seqLength = 16;
                     const numSeq = 64;
                     
-                    function outputSequence(output, originalSeq, set) {
-                        for (var i = 0; i < set.length; i++) {
-                            var item = (isEqual(originalSeq, set) ? '<li>' : '<li class="mutated">');
-                            for (var j = 0; j < set[i].length; j++) {
-                                item += set[j];
-                            }
+                    function outputSequence(output, originalSequence, sequences) {
+                        output.innerHTML = '<ul>';
+                        for (let i = 0; i < numSeq; i++) {
+                            let item = originalSequence === sequences[i] ? '<li>' : '<li class="mutated">';
+                            item += sequences[i];
                             output.innerHTML += item + '</li>';
+                            console.log(sequences[i]);
+                            console.log(originalSequence)
+                            //two arrays are never equal
                         }
+                        output.innerHTML += '</ul>';
                     }
 
                     function startMutation() {
@@ -78,10 +81,9 @@
                         worker.postMessage([mGenerations, mRate, seqLength, numSeq]);
                         worker.onmessage = function(event) {
                             let output = document.getElementById("mut_parOutput");
-                            var textOutput = document.getElementById("mut_textOutput");
                             output.innerHTML = '<h4>Mutation Rate</h4>' + '<div class="text">' + mRate + ' per base & generation</div>';
                             output.innerHTML += '<h4>Generations</h4>' + '<div class="text">' + mGenerations + '</div>';
-                            // outputSequence(textOutput, event.data[2], event.data[0]);
+                            outputSequence(document.getElementById("mut_textOutput") , event.data[2], event.data[0]);
                             output.innerHTML += '<h4>Mutations</h4>' + '<div class="text">' + event.data[1] + '/' + numSeq + '</div>';
                         };
                     }
