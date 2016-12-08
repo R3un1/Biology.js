@@ -34,9 +34,9 @@
                 <div class="assumptions">finite population size, random mating, no overlapping generations, mutation or selection</div>
                 <div id="gen_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
-                    const dPopulation = 512;
-                    const dGenerations = 1000;
-                    const dSimulations = 16;
+                    const dPopulation = 1024;
+                    const dGenerations = 512;
+                    const dSimulations = 8;
                     const bottleNeckFlag = true;
                     const bottleNeck = 16;
 
@@ -206,6 +206,7 @@
                         worker = new Worker ("js/infSelection.js");
                         worker.postMessage([s, h, dsGenerations]);
                         worker.onmessage = function (event) {
+                            output.innerHTML = '';
                             // output.innerHTML = '<h4>P*</h4><div class="text">' + ((h-1)/2h) + '</h4>';
                             draw_line_chart (output, event.data[0], "p", "\u0394 p", [], 1, true);
                             draw_line_chart (output, event.data[1], "generation", "p", []);
@@ -215,10 +216,10 @@
             </section>
             <section id="coevolution">
                 <h3>The Matching Alleles Model</h3>
-                <div class="assumptions"></div>
+                <div class="assumptions">infinite population size, two evolutionary related sets of alleles</div>
                 <div id="co_output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
-                    const cGenerations = 10;
+                    const cGenerations = 500;
                     const sh = 0.2;
                     const sp = 0.5;
 
@@ -227,7 +228,8 @@
                         worker = new Worker ("js/coevolution.js");
                         worker.postMessage([cGenerations, sh, sp]);
                         worker.onmessage = function (d) {
-                            console.log(d.data)
+                            output.innerHTML = '<h4>SH</h4>' + '<div class="text">' + sh + '</div>';
+                            output.innerHTML += '<h4>SP</h4>' + '<div class="text">' + sp + '</div>';
                             draw_line_chart(output, d.data, "Generation", "p", []);
                         };
                     }

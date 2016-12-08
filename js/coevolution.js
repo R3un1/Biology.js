@@ -36,8 +36,8 @@ function parasiteSelection() {
         parasiteFrequencies[i] *= parasiteFitness;
         sumParFreq += parasiteFrequencies[i];
     }
-    for (let i = 0; i < hostFrequencies.length; i++) {
-        hostFrequencies[i] /= sumParFreq;
+    for (let i = 0; i < parasiteFrequencies.length; i++) {
+        parasiteFrequencies[i] /= sumParFreq;
     }
 }
 
