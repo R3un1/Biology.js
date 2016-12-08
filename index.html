@@ -62,16 +62,13 @@
                     const mRate = 0.000055;
                     const seqLength = 16;
                     const numSeq = 64;
-                    
+
                     function outputSequence(output, originalSequence, sequences) {
                         output.innerHTML = '<ul>';
                         for (let i = 0; i < numSeq; i++) {
-                            let item = originalSequence === sequences[i] ? '<li>' : '<li class="mutated">';
+                            let item = isEqual(originalSequence, sequences[i]) ? '<li>' : '<li class="mutated">';
                             item += sequences[i];
                             output.innerHTML += item + '</li>';
-                            console.log(sequences[i]);
-                            console.log(originalSequence)
-                            //two arrays are never equal
                         }
                         output.innerHTML += '</ul>';
                     }
@@ -209,11 +206,33 @@
                         worker = new Worker ("js/infSelection.js");
                         worker.postMessage([s, h, dsGenerations]);
                         worker.onmessage = function (event) {
-                            output.innerHTML = '<h4>P*</h4><div class="text">' + (h-1)/2h;
+                            // output.innerHTML = '<h4>P*</h4><div class="text">' + ((h-1)/2h) + '</h4>';
                             draw_line_chart (output, event.data[0], "p", "\u0394 p", [], 1, true);
                             draw_line_chart (output, event.data[1], "generation", "p", []);
                         };
                     }
+                </script>
+            </section>
+            <section id="coevolution">
+                <h3>The Matching Alleles Model</h3>
+                <div class="assumptions"></div>
+                <div id="co_output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <script type="text/javascript">
+                    const cGenerations = 10;
+                    const sh = 0.2;
+                    const sp = 0.5;
+
+                    function startCoevolution() {
+                        let output = document.getElementById("co_output");
+                        worker = new Worker ("js/coevolution.js");
+                        worker.postMessage([cGenerations, sh, sp]);
+                        worker.onmessage = function (d) {
+                            console.log(d.data)
+                            draw_line_chart(output, d.data, "Generation", "p", []);
+                        };
+                    }
+
+                    startCoevolution();
                 </script>
             </section>
             <section id="epidemics">
