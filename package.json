@@ -1,0 +1,12 @@
+{
+  "name": "Biology.js",
+  "version": "1.0.0",
+  "description": "Evolution models in JavaScript",
+  "main": "index.html",
+  "repository": "https://github.com/R3un1/Biology.js.git",
+  "author": "James Bohacek <jamesbohacek@outlook.com>",
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^3.11.1"
+  }
+}
