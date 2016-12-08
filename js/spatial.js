@@ -121,6 +121,6 @@ function writeF() {
 onmessage = function(c) {
     gridLenght = c.data[0];
     maxMatingDistance = c.data[1];
-    console.log('message received')
     initGrid();
+    postMessage(grid);
 };

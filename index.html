@@ -18,7 +18,6 @@
             <a href="#fixation">Fixation</a>
             <a href="#migration">Migration</a>
             <a href="#selection">Natural Selection</a>
-            <a href="#infSelection">Infinity Selection</a>
             <a href="#epidemics">Epidemy model</a>
         </nav>
         <a href="#" class="floatingDirection"><img src="assets/up.png" /></a>
@@ -111,7 +110,7 @@
             <section id="migration">
                 <h3>Migration Spatial Model</h3>
                 <div class="assumptions">finite population size, no selection or overlapping generations</div>
-                <!--<div id="mig_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
+                <div id="mig_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <button id="mig_button" onclick="migrate()">Start Simulation</button>
                 <div id="mig_parOutput" class="output"></div>
                 <script type="text/javascript">
@@ -120,16 +119,19 @@
 
                     function startMigration() {
                         let output = document.getElementById('mig_output');
-                        var button = document.getElementById('mig_button');
                         worker = new Worker ("js/spatial.js");
                         worker.postMessage([gridSide, maxMatingDistance]);
                         worker.onmessage = function(e) {
                             console.log('message received')
                             output.innerHTML = '<h4>Grid Side</h4>' + '<div class="text">' + gridSide + '</div>';
                             output.innerHTML +=  '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
-                            draw_grid(spaOutput, e.data, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+                            draw_grid(output, e.data, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
                         };
-                    }                    
+                    }
+
+                </script>             
+<!--                       
+                    let migButton = document.getElementById('mig_button');
 
                     function migrate() {
                         function spaSimulation() {
@@ -148,6 +150,10 @@
                         migButton.innerText = 'Pause';
                         sim = setInterval(spaSimulation, 1);
                     }
+
+                    startMigration();
+                
+
 
                     function terminate() {
                         clearInterval(sim);
@@ -191,7 +197,7 @@
                 <h3>Infinity Selection Model</h3>
                 <div class="assumptions">infinite population size, selection in place</div>
                 <div class="controlElements">
-                    <input type="text" id="infInput" placeholder="Enter H" />
+                    <input type="text" id="infInput" placeholder="Enter H" value="-0.618033" />
                     <button onclick="startInfSelection()">Run Simulation</button>
                 </div>
                 <div id="dir_output" class="output"></div>
@@ -206,12 +212,13 @@
                         worker = new Worker ("js/infSelection.js");
                         worker.postMessage([s, h, dsGenerations]);
                         worker.onmessage = function (event) {
-                            output.innerHTML = '';
-                            // output.innerHTML = '<h4>P*</h4><div class="text">' + ((h-1)/2h) + '</h4>';
+                            output.innerHTML = '<h4>P*</h4><div class="text">' + ((h-1)/(2*h-1)) + '</div>';
                             draw_line_chart (output, event.data[0], "p", "\u0394 p", [], 1, true);
                             draw_line_chart (output, event.data[1], "generation", "p", []);
                         };
                     }
+
+                    startInfSelection();
                 </script>
             </section>
             <section id="coevolution">
@@ -220,8 +227,8 @@
                 <div id="co_output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
                     const cGenerations = 500;
-                    const sh = 0.2;
-                    const sp = 0.5;
+                    const sh = .2;
+                    const sp = .5;
 
                     function startCoevolution() {
                         let output = document.getElementById("co_output");
@@ -235,6 +242,7 @@
                     }
 
                     startCoevolution();
+                    //optional TODO: switch population size assumptions
                 </script>
             </section>
             <section id="epidemics">
