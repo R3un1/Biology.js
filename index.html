@@ -111,27 +111,43 @@
                 <h3>Migration Spatial Model</h3>
                 <div class="assumptions">finite population size, no selection or overlapping generations</div>
                 <div id="mig_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
-                <button id="mig_button" onclick="migrate()">Start Simulation</button>
+                <button id="mig_button" onclick="startMigration()">Start Simulation</button>
                 <div id="mig_parOutput" class="output"></div>
                 <script type="text/javascript">
-                    const gridSide = 30;
+                    const mGridSide = 30;
                     const maxMatingDistance = 1;
 
-                    function startMigration() {
+                    var mInitFlag = true; 
+
+                    function initMigration() {
                         let output = document.getElementById('mig_output');
-                        worker = new Worker ("js/spatial.js");
-                        worker.postMessage([gridSide, maxMatingDistance]);
-                        worker.onmessage = function(e) {
-                            console.log('message received')
+                        initWorker = new Worker ("js/spatial.js");
+                        initWorker.postMessage([mGridSide, maxMatingDistance, true]);
+                        initWorker.onmessage = function(e) {
                             output.innerHTML = '<h4>Grid Side</h4>' + '<div class="text">' + gridSide + '</div>';
                             output.innerHTML +=  '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
                             draw_grid(output, e.data, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
                         };
                     }
-
+                    initMigration();
+                    
+                    function startMigration() {
+                        let output = document.getElementById('mig_output');
+                        let migButton = document.getElementById('mig_button');
+                        let parOutput = document.getElementById('mig_parOutput');
+                        migWorker = new Worker ("js/spatial.js");
+                        migWorker.postMessage([mGridSide, maxMatingDistance, false]);
+                        migWorker.onmessage = function(e) {
+                            update_grid(output, e.data[0], ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+                            switch (p) {
+                                case 0:
+                                case 1:
+                                    migWorker.terminate();
+                            }
+                        }
+                    }
                 </script>             
 <!--                       
-                    let migButton = document.getElementById('mig_button');
 
                     function migrate() {
                         function spaSimulation() {

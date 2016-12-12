@@ -6,7 +6,7 @@
   "repository": "https://github.com/R3un1/Biology.js.git",
   "author": "James Bohacek <jamesbohacek@outlook.com>",
   "license": "MIT",
-  "dependencies": {
+  "dev-dependencies": {
     "eslint": "^3.11.1"
   }
 }

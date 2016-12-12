@@ -17,7 +17,7 @@ function initGrid() {
             else grid[i][j] = 'A1A2';
         }
     }
-    console.log('got the grid')
+    postMessage(grid);
 }
 
 
@@ -64,63 +64,11 @@ function spaGeneration() {
             grid[i][j] = tempGrid[i][j];
         }
     }
-}
-
-
-function printData() {
-    var A1A1 = 0;
-    var A1A2 = 0;
-    var A2A2 = 0;
-    for (var i = 0; i < gridLenght; i++) {
-        for (var j = 0; j < gridLenght; j++) {
-            switch (grid[i][j]) {
-                case 'A1A1':
-                A1A1++;
-                break;
-                case 'A1A2':
-                A1A2++;
-                break;
-                case 'A2A2':
-                A2A2++;
-                break;
-            }
-        }
-    }
-    console.log('Generation ' + spaGenerationsCounter + ':');
-    console.log(A1A1, A1A2, A2A2);
-}
-
-function writeF() {
-    var A1A1 = 0;
-    var A1A2 = 0;
-    var A2A2 = 0;
-    for (var i = 0; i < gridLenght; i++) {
-        for (var j = 0; j < gridLenght; j++) {
-            switch (grid[i][j]) {
-                case 'A1A1':
-                A1A1++;
-                break;
-                case 'A1A2':
-                A1A2++;
-                break;
-                case 'A2A2':
-                A2A2++;
-                break;
-            }
-        }
-    }
-    var N = Math.pow(gridLenght, 2);
-    var h_o = A1A2 / N;
-    p = ((2 * A1A1) + A1A2) / (2 * N);
-    var h_e = 2 * p * (1-p);
-    F = (h_e - h_o) / h_e;
-    document.getElementById('mig_parOutput').innerHTML = '<h4>Generation</h4>' + '<div class="text">' + spaGenerationsCounter + '</div>';
-    // document.getElementById('mig_parOutput').innerHTML += '<h4>F of heterozygosity</h4>' + '<div class="text">' + precisionRound(F, 2) + '</div>';
+    postMessage([grid, p]);
 }
 
 onmessage = function(c) {
     gridLenght = c.data[0];
     maxMatingDistance = c.data[1];
-    initGrid();
-    postMessage(grid);
+    c[2] ? initGrid() : setInterval(spaGeneration(), 50);
 };
