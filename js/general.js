@@ -10,6 +10,12 @@ function isEqual(setA, setB) {
     return true;
 }
 
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+
 function draw_line_chart(output,data,x_label,y_label,legend_values,x_max,y_max_flex) {
     var margin = {top: 30, right: 50, bottom: 50, left: 50},
         width = 550 - margin.left - margin.right,

@@ -1,32 +1,29 @@
 //modifiers
-const gridLenght = 30;
+const sGridLenght = 30;
 const maxMatingDistance = 1;
-const time = 3000;
-const spaGenerations = 100;
-
 
 const spaOutput = document.getElementById('mig_output');
 const migButton = document.getElementById('mig_button');
 
-var p;
-var grid = [];
+var sP;
+var sGrid = [];
 var spaGenerationsCounter = 0;
 var F = 0;
 var sim;
 
 
-spaOutput.innerHTML += '<h4>Grid Side</h4>' + '<div class="text">' + gridLenght + '</div>';
+spaOutput.innerHTML += '<h4>Grid Side</h4>' + '<div class="text">' + sGridLenght + '</div>';
 spaOutput.innerHTML += '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
-initGrid();
-draw_grid(spaOutput, grid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+initSGrid();
+draw_grid(spaOutput, sGrid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
 
 function migrate() {
     function spaSimulation() {
         spaGeneration();
-        update_grid(spaOutput, grid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+        update_grid(spaOutput, sGrid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
         spaGenerationsCounter++;
         writeF();
-        if (p === 1 || p === 0) {
+        if (sP === 1 || sP === 0) {
             clearInterval(sim);
             migButton.setAttribute('onclick', 'restart()');
             migButton.innerText = 'Restart';
@@ -35,7 +32,7 @@ function migrate() {
     }
     migButton.setAttribute('onclick', 'terminate()');
     migButton.innerText = 'Pause';
-    sim = setInterval(spaSimulation, 1);
+    sim = setInterval(spaSimulation, 60);
 }
 
 function terminate() {
@@ -45,35 +42,30 @@ function terminate() {
 }
 
 function restart() {
-    grid = [];
+    sGrid = [];
     spaGenerationsCounter = 0;
-    initGrid();
+    initSGrid();
     migrate();
 }
 
 
-function initGrid() {
-    p = 0.5;
-    for (var i = 0; i < gridLenght; i++) {
-        grid[i] = [];
-        for (var j = 0; j < gridLenght; j++) {
+function initSGrid() {
+    sP = 0.5;
+    for (var i = 0; i < sGridLenght; i++) {
+        sGrid[i] = [];
+        for (var j = 0; j < sGridLenght; j++) {
             var rdNumber = Math.random();
-            if (rdNumber < (p*p)) grid[i][j] = 'A1A1'
-            else if (rdNumber > (1-(1-p)*(1-p))) grid[i][j] = 'A2A2'
-            else grid[i][j] = 'A1A2';
+            if (rdNumber < (sP*sP)) sGrid[i][j] = 'A1A1'
+            else if (rdNumber > (1-(1-sP)*(1-sP))) sGrid[i][j] = 'A2A2'
+            else sGrid[i][j] = 'A1A2';
         }
     }
 }
 
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
 function pickMatingPartner(i, j) {
-    var ii = Math.abs(getRandomInt(i-maxMatingDistance, i+maxMatingDistance) % gridLenght);
-    var jj = Math.abs(getRandomInt(j-maxMatingDistance, j+maxMatingDistance) % gridLenght);
-    return grid[ii][jj];
+    var ii = Math.abs(getRandomInt(i-maxMatingDistance, i+maxMatingDistance) % sGridLenght);
+    var jj = Math.abs(getRandomInt(j-maxMatingDistance, j+maxMatingDistance) % sGridLenght);
+    return sGrid[ii][jj];
 }
 
 function getOffspring(parent1, parent2) {
@@ -97,16 +89,16 @@ function getOffspring(parent1, parent2) {
 
 function spaGeneration() {
     var tempGrid = [];
-    for (var i = 0; i < gridLenght; i++) {
+    for (var i = 0; i < sGridLenght; i++) {
         tempGrid[i] = [];
-        for (var j = 0; j < gridLenght; j++) {
+        for (var j = 0; j < sGridLenght; j++) {
             var matingPartner = pickMatingPartner(i, j);
-            tempGrid[i][j] = getOffspring(grid[i][j], matingPartner);
+            tempGrid[i][j] = getOffspring(sGrid[i][j], matingPartner);
         }
     }
-    for (var i = 0; i < gridLenght; i++) {
-        for (var j = 0; j < gridLenght; j++){
-            grid[i][j] = tempGrid[i][j];
+    for (var i = 0; i < sGridLenght; i++) {
+        for (var j = 0; j < sGridLenght; j++){
+            sGrid[i][j] = tempGrid[i][j];
         }
     }
 }
@@ -116,9 +108,9 @@ function printData() {
     var A1A1 = 0;
     var A1A2 = 0;
     var A2A2 = 0;
-    for (var i = 0; i < gridLenght; i++) {
-        for (var j = 0; j < gridLenght; j++) {
-            switch (grid[i][j]) {
+    for (var i = 0; i < sGridLenght; i++) {
+        for (var j = 0; j < sGridLenght; j++) {
+            switch (sGrid[i][j]) {
                 case 'A1A1':
                 A1A1++;
                 break;
@@ -139,9 +131,9 @@ function writeF() {
     var A1A1 = 0;
     var A1A2 = 0;
     var A2A2 = 0;
-    for (var i = 0; i < gridLenght; i++) {
-        for (var j = 0; j < gridLenght; j++) {
-            switch (grid[i][j]) {
+    for (var i = 0; i < sGridLenght; i++) {
+        for (var j = 0; j < sGridLenght; j++) {
+            switch (sGrid[i][j]) {
                 case 'A1A1':
                 A1A1++;
                 break;
@@ -154,10 +146,10 @@ function writeF() {
             }
         }
     }
-    var N = Math.pow(gridLenght, 2);
+    var N = Math.pow(sGridLenght, 2);
     var h_o = A1A2 / N;
-    p = ((2 * A1A1) + A1A2) / (2 * N);
-    var h_e = 2 * p * (1-p);
+    sP = ((2 * A1A1) + A1A2) / (2 * N);
+    var h_e = 2 * sP * (1-sP);
     F = (h_e - h_o) / h_e;
     document.getElementById('mig_parOutput').innerHTML = '<h4>Generation</h4>' + '<div class="text">' + spaGenerationsCounter + '</div>';
     // document.getElementById('mig_parOutput').innerHTML += '<h4>F of heterozygosity</h4>' + '<div class="text">' + precisionRound(F, 2) + '</div>';
