@@ -123,12 +123,12 @@
                     const sSimulations = 16;
                     const sGenerations = 500;
                     const sPopulation = 1000;
-                    const sP = 0.01;
+                    const selP = 0.01;
                     const fitness = 1.01;
 
                     function startSelection() {
                         worker = new Worker ("js/selection.js");
-                        worker.postMessage([sSimulations, sGenerations, sPopulation, sP, fitness]);
+                        worker.postMessage([sSimulations, sGenerations, sPopulation, selP, fitness]);
                         worker.onmessage = function (event) {
                             let output = document.getElementById('sel_output');
                             output.innerHTML = '<h4>Population</h4>' + '<div class="text">' + sPopulation + '</div>';
