@@ -33,11 +33,11 @@
                 <div class="assumptions">finite population size, random mating, no overlapping generations, mutation or selection</div>
                 <div id="gen_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
-                    const dPopulation = 1024;
-                    const dGenerations = 512;
+                    const dPopulation = 65536;
+                    const dGenerations = 65536;
                     const dSimulations = 8;
                     const bottleNeckFlag = true;
-                    const bottleNeck = 16;
+                    const bottleNeck = 16384;
 
                     function startDrift() {
                         worker = new Worker ("js/gDrift.js");
@@ -57,10 +57,10 @@
                 <div id="mut_parOutput" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <div id="mut_textOutput" class="textOutput"></div>
                 <script type="text/javascript">
-                    const mGenerations = 8;
-                    const mRate = 0.000055;
-                    const seqLength = 16;
-                    const numSeq = 64;
+                    const mGenerations = Math.pow(2, 19);
+                    const mRate = 0.000000000005;
+                    const seqLength = 32;
+                    const numSeq = 32;
 
                     function outputSequence(output, originalSequence, sequences) {
                         output.innerHTML = '<ul>';
@@ -92,7 +92,7 @@
                 <div id="fix_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
                     const fSimulations = 10000;
-                    const fPopulation = 100;
+                    const fPopulation = 2048;
 
                     function startFixation() {
                         let output = document.getElementById('fix_output')
@@ -120,11 +120,11 @@
                 <div class="assumptions">finite population size, alleles of unequal fitness, no overlapping generations</div>
                 <div id="sel_output" class="output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
-                    const sSimulations = 16;
-                    const sGenerations = 500;
-                    const sPopulation = 1000;
+                    const sSimulations = 124;
+                    const sGenerations = 1024;
+                    const sPopulation = 16384;
                     const selP = 0.01;
-                    const fitness = 1.01;
+                    const fitness = 1.001;
 
                     function startSelection() {
                         worker = new Worker ("js/selection.js");
@@ -172,9 +172,9 @@
                 <div class="assumptions">infinite population size, two evolutionary related sets of alleles</div>
                 <div id="co_output"><h4>Simulation in Progress</h4><div class="text">[this may take a while]...</div></div>
                 <script type="text/javascript">
-                    const cGenerations = 500;
-                    const sh = .2;
-                    const sp = .5;
+                    const cGenerations = 5000;
+                    const sh = .02;
+                    const sp = .05;
 
                     function startCoevolution() {
                         let output = document.getElementById("co_output");
