@@ -1,27 +1,26 @@
 //modifiers
-const sGridLenght = 30;
+const sGridLenght = 100;
 const maxMatingDistance = 1;
 
 const spaOutput = document.getElementById('mig_output');
 const migButton = document.getElementById('mig_button');
 
-var sP;
-var sGrid = [];
-var spaGenerationsCounter = 0;
-var F = 0;
-var sim;
+let sP;
+let sGrid = [];
+let spaGenerationsCounter = 0;
+let F = 0;
+let sim;
 
 
 spaOutput.innerHTML += '<h4>Grid Side</h4>' + '<div class="text">' + sGridLenght + '</div>';
 spaOutput.innerHTML += '<h4>Max Mating Distance</h4>' + '<div class="text">' + maxMatingDistance + '</div>';
 initSGrid();
-draw_grid(spaOutput, sGrid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
+draw_grid(spaOutput, sGrid, ["AB", "#e8ef8b", "A", "#af2f2f", "B", "#23a025", "O", "#273075"]);
 
 function migrate() {
     function spaSimulation() {
         spaGeneration();
-        update_grid(spaOutput, sGrid, ["A1A2", "#e8ef8b", "A1A1", "#af2f2f", "A2A2", "#23a025"]);
-        spaGenerationsCounter++;
+        update_grid(spaOutput, sGrid, ["AB", "#e8ef8b", "A", "#af2f2f", "B", "#23a025", "O", "#273075"]);
         writeF();
         if (sP === 1 || sP === 0) {
             clearInterval(sim);
@@ -50,107 +49,130 @@ function restart() {
 
 
 function initSGrid() {
-    sP = 0.5;
-    for (var i = 0; i < sGridLenght; i++) {
+    for (let i = 0; i < sGridLenght; i++) {
         sGrid[i] = [];
-        for (var j = 0; j < sGridLenght; j++) {
-            var rdNumber = Math.random();
-            if (rdNumber < (sP*sP)) sGrid[i][j] = 'A1A1'
-            else if (rdNumber > (1-(1-sP)*(1-sP))) sGrid[i][j] = 'A2A2'
-            else sGrid[i][j] = 'A1A2';
+        for (let j = 0; j < sGridLenght; j++) {
+            sGrid[i][j] = Math.random() < .5 ? (
+                Math.random() < .5 ? 'A' : 'B'
+            ) : (
+                Math.random() < .5 ? 'AB' : 'O'
+            );
+            // let rdNumber = Math.random();
+            // if (rdNumber < (sP*sP)) sGrid[i][j] = 'A'
+            // else if (rdNumber > (1-(1-sP)*(1-sP))) sGrid[i][j] = 'B'
+            // else sGrid[i][j] = 'AB';
         }
     }
 }
 
 function pickMatingPartner(i, j) {
-    var ii = getRandomInt(i-maxMatingDistance, i+maxMatingDistance);
-    var jj = getRandomInt(j-maxMatingDistance, j+maxMatingDistance);
+    let ii = getRandomInt(i-maxMatingDistance, i+maxMatingDistance);
+    let jj = getRandomInt(j-maxMatingDistance, j+maxMatingDistance);
     return sGrid[boundIndex(ii, sGridLenght)][boundIndex(jj, sGridLenght)];
 }
 
 function getOffspring(parent1, parent2) {
-    if (parent1 === 'A1A1' && parent2 === 'A1A1') return 'A1A1';
-    else if ((parent1 === 'A1A1' && parent2 === 'A1A2') || (parent2 === 'A1A1' && parent1 === 'A1A2')) {
-        return Math.random() < 0.5 ? 'A1A1' : 'A1A2';
+    let rnd = Math.random();
+    /* pure parents */
+    if (parent1 === 'O' && parent2 === 'O') return 'O';
+    else if (parent1 === 'A' && parent2 === 'A') return rnd < .5 ? 'O' : 'A';
+    else if (parent1 === 'B' && parent2 === 'B') return rnd < .5 ? 'O' : 'B';
+    else if (parent1 === 'AB' && parent2 === 'AB') {
+        if (rnd < .25) return 'A';
+        else if (rnd >= .75) return 'B';
+        else return 'AB';
     }
-    else if ((parent1 === 'A1A1' && parent2 === 'A2A2') || (parent2 === 'A1A1' && parent1 === 'A2A2')) return 'A1A2';
-    else if (parent1 === 'A1A2' && parent2 === 'A1A2') {
-        var rnd = Math.random();
-        if (rnd < .25) return 'A1A1';
-        else if (rnd >= .75) return 'A2A2';
-        else return 'A1A2';
+    /* 0 parent */
+    else if ((parent1 === 'O' && parent2 === 'A') || (parent2 === 'O' && parent1 === 'A')) return rnd < .5 ? 'O' : 'A';
+    else if ((parent1 === 'O' && parent2 === 'B') || (parent2 === 'O' && parent1 === 'B')) return rnd < .5 ? 'O' : 'B';
+    else if ((parent1 === 'O' && parent2 === 'AB') || (parent2 === 'O' && parent1 === 'AB')) return rnd < .5 ? 'A' : 'B';
+    /* A parent */
+    else if ((parent1 === 'A' && parent2 === 'O') || (parent2 === 'A' && parent1 === 'O')) return rnd < .5 ? 'A' : 'O';
+    else if ((parent1 === 'A' && parent2 === 'B') || (parent2 === 'A' && parent1 === 'B')) {
+        return rnd < .5 ? (
+            Math.random() < .5 ? 'O' : 'A'
+        ) : (
+            Math.random() < .5 ? 'B' : 'AB'
+        );
     }
-    else if ((parent1 === 'A2A2' && parent2 === 'A1A2') || (parent2 === 'A2A2' && parent1 === 'A1A2')) {
-        return Math.random() < 0.5 ? 'A2A2' : 'A1A2';
+    else if ((parent1 === 'A' && parent2 === 'AB') || (parent2 === 'A' && parent1 === 'AB')) {
+        if (rnd < .25) return 'AB';
+        else if (rnd >= .75) return 'B';
+        else return 'A';
     }
-    else if (parent1 === 'A2A2' && parent2 === 'A2A2') return 'A2A2';
+    /* B parent */
+    else if ((parent1 === 'B' && parent2 === 'O') || (parent2 === 'B' && parent1 === 'O')) return rnd < .5 ? 'B' : 'O';
+    else if ((parent1 === 'B' && parent2 === 'A') || (parent2 === 'B' && parent1 === 'A')) {
+        return rnd < .5 ? (
+            Math.random() < .5 ? 'O' : 'A'
+        ) : (
+            Math.random() < .5 ? 'B' : 'AB'
+        );
+    }
+    else if ((parent1 === 'B' && parent2 === 'AB') || (parent2 === 'B' && parent1 === 'AB')) {
+        if (rnd < .25) return 'AB';
+        else if (rnd >= .75) return 'A';
+        else return 'B';
+    }
+    /* AB parent */
+    else if ((parent1 === 'AB' && parent2 === 'O') || (parent2 === 'AB' && parent1 === 'O')) return rnd < .5 ? 'A' : 'B';
+    else if ((parent1 === 'AB' && parent2 === 'A') || (parent2 === 'AB' && parent1 === 'A')) {
+        if (rnd < .25) return 'AB';
+        else if (rnd >= .75) return 'B';
+        else return 'A';
+    }
+    else if ((parent1 === 'AB' && parent2 === 'B') || (parent2 === 'AB' && parent1 === 'B')) {
+        if (rnd < .25) return 'AB';
+        else if (rnd >= .75) return 'A';
+        else return 'B';
+    }
     else console.log('error');
 }
 
 function spaGeneration() {
-    var tempGrid = [];
-    for (var i = 0; i < sGridLenght; i++) {
+    let tempGrid = [];
+    for (let i = 0; i < sGridLenght; i++) {
         tempGrid[i] = [];
-        for (var j = 0; j < sGridLenght; j++) {
-            var matingPartner = pickMatingPartner(i, j);
+        for (let j = 0; j < sGridLenght; j++) {
+            let matingPartner = pickMatingPartner(i, j);
             tempGrid[i][j] = getOffspring(sGrid[i][j], matingPartner);
         }
     }
-    for (var i = 0; i < sGridLenght; i++) {
-        for (var j = 0; j < sGridLenght; j++){
+    for (let i = 0; i < sGridLenght; i++) {
+        for (let j = 0; j < sGridLenght; j++){
             sGrid[i][j] = tempGrid[i][j];
         }
     }
 }
 
-
-function printData() {
-    var A1A1 = 0;
-    var A1A2 = 0;
-    var A2A2 = 0;
-    for (var i = 0; i < sGridLenght; i++) {
-        for (var j = 0; j < sGridLenght; j++) {
-            switch (sGrid[i][j]) {
-                case 'A1A1':
-                A1A1++;
-                break;
-                case 'A1A2':
-                A1A2++;
-                break;
-                case 'A2A2':
-                A2A2++;
-                break;
-            }
-        }
-    }
-    console.log('Generation ' + spaGenerationsCounter + ':');
-    console.log(A1A1, A1A2, A2A2);
-}
-
 function writeF() {
-    var A1A1 = 0;
-    var A1A2 = 0;
-    var A2A2 = 0;
-    for (var i = 0; i < sGridLenght; i++) {
-        for (var j = 0; j < sGridLenght; j++) {
+    let A = 0;
+    let AB = 0;
+    let B = 0;
+    let O = 0;
+    for (let i = 0; i < sGridLenght; i++) {
+        for (let j = 0; j < sGridLenght; j++) {
             switch (sGrid[i][j]) {
-                case 'A1A1':
-                A1A1++;
+                case 'A':
+                A++;
                 break;
-                case 'A1A2':
-                A1A2++;
+                case 'AB':
+                AB++;
                 break;
-                case 'A2A2':
-                A2A2++;
+                case 'B':
+                B++;
                 break;
+                case 'O':
+                O++;
             }
         }
     }
-    var N = Math.pow(sGridLenght, 2);
-    var h_o = A1A2 / N;
-    sP = ((2 * A1A1) + A1A2) / (2 * N);
-    var h_e = 2 * sP * (1-sP);
+    let N = Math.pow(sGridLenght, 2);
+    let h_o = AB / N;
+    sP = ((2 * A) + AB) / (2 * N);
+    let h_e = 2 * sP * (1-sP);
     F = (h_e - h_o) / h_e;
+    spaGenerationsCounter++;
     document.getElementById('mig_parOutput').innerHTML = '<h4>Generation</h4>' + '<div class="text">' + spaGenerationsCounter + '</div>';
-    // document.getElementById('mig_parOutput').innerHTML += '<h4>F of heterozygosity</h4>' + '<div class="text">' + precisionRound(F, 2) + '</div>';
+    document.getElementById('mig_parOutput').innerHTML += '<h4>F of heterozygosity</h4>' + '<div class="text">' + precisionRound(F, 2) + '</div>';
 }
