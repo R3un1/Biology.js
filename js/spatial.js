@@ -63,9 +63,9 @@ function initSGrid() {
 }
 
 function pickMatingPartner(i, j) {
-    var ii = Math.abs(getRandomInt(i-maxMatingDistance, i+maxMatingDistance) % sGridLenght);
-    var jj = Math.abs(getRandomInt(j-maxMatingDistance, j+maxMatingDistance) % sGridLenght);
-    return sGrid[ii][jj];
+    var ii = getRandomInt(i-maxMatingDistance, i+maxMatingDistance);
+    var jj = getRandomInt(j-maxMatingDistance, j+maxMatingDistance);
+    return sGrid[boundIndex(ii, sGridLenght)][boundIndex(jj, sGridLenght)];
 }
 
 function getOffspring(parent1, parent2) {

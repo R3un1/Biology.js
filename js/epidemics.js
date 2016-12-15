@@ -1,8 +1,9 @@
 //modifiers
-const eGridLenght = 30;
+const eGridLenght = 70;
 const nearDistance = 1;
-const beta = 0.5;
-const gamma = 0.2;
+const beta = .02;
+const gamma = .045;
+const randomVictim = .005;
 
 const epOutput = document.getElementById('ep_output');
 const epButton = document.getElementById('ep_button');
@@ -13,8 +14,8 @@ let epGenerationsCounter = 0;
 let outbreak;
 let infected = 0;
 
-epOutput.innerHTML = '<h4>Grid Side</h4><div class="text">' + eGridLenght + '</div>';
-epOutput.innerHTML = '<h4>Max Infection Distance</h4><div class="text">' + nearDistance + '</div>';
+// epOutput.innerHTML = '<h4>Grid Side</h4><div class="text">' + eGridLenght + '</div>';
+// epOutput.innerHTML = '<h4>Max Infection Distance</h4><div class="text">' + nearDistance + '</div>';
 initEGrid();
 draw_grid(epOutput, eGrid, ["S", "#1e1e1e", "I", "#af2f2f", "R", "#23a025"]);
 
@@ -99,16 +100,19 @@ function epGeneration() {
 }
 
 function exposeNeighbors(i, j) {
-    for (let ii = i-1; ii <= i+1; ii++) {
-        for (let jj = j-1; jj <= j+1; jj++) {
-            if (ii === i && jj === j) continue;
-            tryInfection(boundIndex(ii), boundIndex(jj));
+    let boundI, boundJ;
+    for (let ii = i-nearDistance; ii <= i+nearDistance; ii++) {
+        boundI = boundIndex(ii, eGridLenght);
+        for (let jj = j-nearDistance; jj <= j+nearDistance; jj++) {
+            boundJ = boundIndex(jj, eGridLenght);
+            if (Math.random() < randomVictim) {
+                boundI = getRandomInt(0, eGridLenght-1);
+                boundJ = getRandomInt(0, eGridLenght-1);
+            }
+            if (boundI === i && boundJ === j) continue;
+            tryInfection(boundI, boundJ);
         }
     }
-}
-
-function boundIndex(i) {
-    return Math.abs(i % eGridLenght);
 }
 
 function tryInfection(i, j) {

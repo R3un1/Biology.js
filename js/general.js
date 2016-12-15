@@ -15,6 +15,9 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+function boundIndex(index, boundary) {
+    return index < 0 ? boundary + index : index % boundary;
+}
 
 function draw_line_chart(output,data,x_label,y_label,legend_values,x_max,y_max_flex) {
     var margin = {top: 30, right: 50, bottom: 50, left: 50},
