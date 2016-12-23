@@ -10,6 +10,6 @@ Here I have taken the idea a bit higher building a simple web application around
 * [ ] config elements added
 * [ ] Web Workers replaced by ES6 async JavaScript (*although...*)
 * [ ] added a calculation time estimation
-* [ ] got bored
+* [x] got bored
 
 ### [Online] (https://r3un1.github.io/Biology.js/)
